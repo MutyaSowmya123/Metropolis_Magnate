@@ -1,0 +1,11 @@
+Model Information:
+* title:	HD Metal Ball 4K JFG
+* source:	https://sketchfab.com/3d-models/hd-metal-ball-4k-jfg-b4c9b518340c4fd583d0137d1d07133c
+* author:	Jesus Fernandez Garcia (https://sketchfab.com/jamyzgenius)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "HD Metal Ball 4K JFG" (https://sketchfab.com/3d-models/hd-metal-ball-4k-jfg-b4c9b518340c4fd583d0137d1d07133c) by Jesus Fernandez Garcia (https://sketchfab.com/jamyzgenius) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
