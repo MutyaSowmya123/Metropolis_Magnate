@@ -36,12 +36,15 @@ const init = async () => {
 
   const geometry = new THREE.PlaneGeometry(1, 1);
   const texture = new THREE.TextureLoader().load('./assets/wood.jpeg');
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(20,20);
   const material = new THREE.MeshBasicMaterial({
     map: texture,
   });
   const plane = new THREE.Mesh(geometry, material);
   plane.rotateX(-Math.PI / 2);
-  plane.scale.set(100, 100, 100);
+  plane.scale.set(1000, 1000, 1000);
   scene.add(plane);
 
   const gridHelper = new THREE.GridHelper(10, 10);
