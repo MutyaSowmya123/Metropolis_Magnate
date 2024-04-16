@@ -19,8 +19,15 @@ const init = async () => {
   camera.position.set(4, 4, 4);
   camera.lookAt(0, 0, 0);
 
-  const controls = new OrbitControls(camera, renderer.domElement); // Initialize OrbitControls
-  controls.update(); // Update controls to reflect any changes
+  // Initialize OrbitControls with custom settings
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; // Enable damping (inertia) for smooth camera movement
+  controls.dampingFactor = 0.25; // Adjust the damping factor for the desired smoothness
+  controls.rotateSpeed = 0.5; // Adjust the rotate speed for mouse movement
+
+  // Disable panning and zooming to prevent interference with your game mechanics
+  controls.enablePan = false;
+  controls.enableZoom = false;
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 10);
   scene.add(directionalLight);
@@ -41,19 +48,18 @@ const init = async () => {
   scene.add(gridHelper);
 
   metalBall = await load('./metalBall/scene.gltf');
-  // Adjust the position of the metalBall
-  metalBall.position.set(0, 1, 0); // Adjust the position as per your requirement
-  metalBall.scale.set(0.01, 0.01, 0.01); // Adjust the scale as per your requirement
+  metalBall.position.set(0, 1, 0);
+  metalBall.scale.set(0.01, 0.01, 0.01);
   scene.add(metalBall);
 
   console.log('made a scene', metalBall);
 
-  // Generate and add elements randomly on the surface
-  generateElements(20); // Change the number as per your requirement
+  generateElements(20);
 
-  document.addEventListener('keydown', onKeyDown); // Listen for keydown events
-  animate(); // Start the animation loop after initialization
+  document.addEventListener('keydown', onKeyDown);
+  animate();
 };
+
 
 const generateElements = (count) => {
   const elementGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
@@ -94,9 +100,23 @@ const onKeyDown = (event) => {
 const moveBall = (direction) => {
   // Project the movement direction onto the horizontal plane
   const horizontalDirection = new THREE.Vector3(direction.x, 0, direction.z).normalize();
+  const moveSpeed = 0.5; // Speed of the movement
   // Calculate the new position of the ball
-  const newPosition = metalBall.position.clone().add(horizontalDirection.multiplyScalar(0.1)); // Adjust the movement speed as per your requirement
-  
+  const newPosition = metalBall.position.clone().add(horizontalDirection.multiplyScalar(moveSpeed));
+
+  // Calculate the circumference of the ball
+  // Assuming the original model of the ball is scaled down to 0.01 of its original size
+  const ballRadius = 0.5 * 0.01; // Example: original model radius assumed to be 0.5 units; adjust as necessary
+  const ballCircumference = 2 * Math.PI * ballRadius;
+
+  // Rotate the ball
+  // Determine the axis of rotation (perpendicular to the direction of movement)
+  const axisOfRotation = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), horizontalDirection).normalize();
+  const distanceMoved = horizontalDirection.length() * moveSpeed;
+  const rotationAngle = distanceMoved / ballCircumference * (2 * Math.PI); // Full rotation for each circumference length traveled
+
+  metalBall.rotateOnWorldAxis(axisOfRotation, -rotationAngle); // Negative to ensure correct direction based on axis
+
   // Move the ball to the new position
   metalBall.position.copy(newPosition);
 
@@ -116,6 +136,7 @@ const moveBall = (direction) => {
     }
   });
 };
+
 
 
 const animate = () => {
