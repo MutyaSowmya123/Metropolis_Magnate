@@ -35,7 +35,7 @@ const init = async () => {
   scene.add(helper);
 
   const geometry = new THREE.PlaneGeometry(1, 1);
-  const texture = new THREE.TextureLoader().load('./assets/road.jpeg');
+  const texture = new THREE.TextureLoader().load('./assets/wood.jpeg');
   const material = new THREE.MeshBasicMaterial({
     map: texture,
   });
