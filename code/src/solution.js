@@ -99,7 +99,10 @@ const moveBall = (direction) => {
   
   // Move the ball to the new position
   metalBall.position.copy(newPosition);
-  
+
+  // Move the camera in the same direction
+  camera.position.copy(newPosition.clone().add(new THREE.Vector3(4, 4, 4))); // Adjust camera offset as needed
+
   // Check for collision with elements
   elements.forEach((element, index) => {
     const elementDistance = element.position.distanceTo(metalBall.position);
@@ -113,9 +116,6 @@ const moveBall = (direction) => {
     }
   });
 };
-
-
-
 
 
 const animate = () => {
