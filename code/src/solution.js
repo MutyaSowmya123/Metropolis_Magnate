@@ -57,26 +57,12 @@ const init = async () => {
 
   console.log('made a scene', metalBall);
 
-  generateElements(20);
+ 
 
   document.addEventListener('keydown', onKeyDown);
   animate();
 };
 
-
-const generateElements = (count) => {
-  const elementGeometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-  const elementMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-  
-  for (let i = 0; i < count; i++) {
-    const element = new THREE.Mesh(elementGeometry, elementMaterial);
-    const randomX = Math.random() * 100 - 50; // Random x position within the plane
-    const randomZ = Math.random() * 100 - 50; // Random z position within the plane
-    element.position.set(randomX, 0.1, randomZ); // Set y position slightly above the plane
-    scene.add(element);
-    elements.push(element);
-  }
-};
 
 const onKeyDown = (event) => {
   switch (event.key) {
@@ -126,18 +112,7 @@ const moveBall = (direction) => {
   // Move the camera in the same direction
   camera.position.copy(newPosition.clone().add(new THREE.Vector3(4, 4, 4))); // Adjust camera offset as needed
 
-  // Check for collision with elements
-  elements.forEach((element, index) => {
-    const elementDistance = element.position.distanceTo(metalBall.position);
-    if (elementDistance < 0.3) { // Adjust the collision radius as per your requirement
-      // Remove the element from the scene
-      scene.remove(element);
-      // Add the element to the ball's children so that it sticks to the ball
-      metalBall.add(element);
-      // Remove the element from the elements array
-      elements.splice(index, 1);
-    }
-  });
+  
 };
 
 
