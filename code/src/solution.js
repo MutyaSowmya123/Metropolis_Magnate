@@ -47,8 +47,8 @@ const init = async () => {
   plane.scale.set(1000, 1000, 1000);
   scene.add(plane);
 
-  const gridHelper = new THREE.GridHelper(10, 10);
-  scene.add(gridHelper);
+  //const gridHelper = new THREE.GridHelper(10, 10);
+  //scene.add(gridHelper);
 
   metalBall = await load('./metalBall/scene.gltf');
   metalBall.position.set(0, 1, 0);
