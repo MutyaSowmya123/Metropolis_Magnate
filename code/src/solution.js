@@ -45,7 +45,7 @@ const init = async () => {
 
   // Load and position the metal ball
   metalBall = await load('./metalBall/scene.gltf');
-  metalBall.position.set(0, 0.5, 0); // Adjusted to be on the surface
+  metalBall.position.set(0, 1, 0); // Adjusted to be on the surface
   metalBall.scale.set(0.01, 0.01, 0.01);
   scene.add(metalBall);
 
