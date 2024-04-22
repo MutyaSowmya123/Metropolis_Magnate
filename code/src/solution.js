@@ -76,7 +76,7 @@ const init = async () => {
   // Load and position the metal ball
   metalBall = await load("./metalBall/scene.gltf");
   metalBall.position.set(0, 1, 0); // Adjusted to be on the surface
-  metalBall.scale.set(0.01, 0.01, 0.01);
+  metalBall.scale.set(0.007, 0.007, 0.007);
   scene.add(metalBall);
 
   // Load chair, pen stand, and lamp
@@ -89,8 +89,8 @@ const init = async () => {
   const penStandScale = 10;
   const lampScale = 5;
 
-  const maxDistance = 80; // Maximum distance for random positioning
-  const numInstances = 9; // Number of instances for each element
+  const maxDistance = 60; // Maximum distance for random positioning
+  const numInstances = 5; // Number of instances for each element
 
   for (let i = 0; i < numInstances; i++) {
     // Generate random positions for each instance
@@ -206,7 +206,7 @@ const moveBall = (direction) => {
       console.log("Collision detected with penstand at index:", i);
       // Check if all penstands are collected
       // Increase ball size
-      metalBall.scale.multiplyScalar(1.005);
+      metalBall.scale.multiplyScalar(1.06);
       // Remove pen stand from scene
       scene.remove(penStandInstance);
       penStands.splice(i, 1);
@@ -227,7 +227,7 @@ const moveBall = (direction) => {
         );
 
         // Increase ball size
-        metalBall.scale.multiplyScalar(1.01);
+        metalBall.scale.multiplyScalar(1.06);
         // Remove lamp from scene
         scene.remove(lamp);
         lamps.splice(index, 1);
@@ -241,7 +241,7 @@ const moveBall = (direction) => {
     chairs.forEach((chair, index) => {
       if (metalBall.position.distanceTo(chair.position) < 10) {
         // Increase ball size
-        metalBall.scale.multiplyScalar(1.05);
+        metalBall.scale.multiplyScalar(1.09);
         // Remove chair from scene
         scene.remove(chair);
         chairs.splice(index, 1);
