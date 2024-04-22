@@ -201,16 +201,16 @@ const moveBall = (direction) => {
   for (let i = penStands.length - 1; i >= 0; i--) {
     const penStandInstance = penStands[i];
     const distance = metalBall.position.distanceTo(penStandInstance.position);
-    console.log("Distance to penstand at index", i, ":", distance);
-    if (distance < 5) {
-      console.log("Collision detected with penstand at index:", i);
+    
+    if (distance < 2) {
+      
       // Check if all penstands are collected
       // Increase ball size
       metalBall.scale.multiplyScalar(1.06);
       // Remove pen stand from scene
       scene.remove(penStandInstance);
       penStands.splice(i, 1);
-      console.log("Penstand removed from scene");
+      
       collisionDetected = true;
       break; // Exit loop after detecting collision with one penstand
     }
@@ -219,12 +219,9 @@ const moveBall = (direction) => {
   // Check for collisions with lamps
   if (!collisionDetected && penStands.length === 0) {
     lamps.forEach((lamp, index) => {
-      if (metalBall.position.distanceTo(lamp.position) < 5) {
-        console.log("Ball position:", metalBall.position);
-        console.log(
-          "Penstand positions:",
-          penStands.map((penStand) => penStand.position)
-        );
+      if (metalBall.position.distanceTo(lamp.position) < 2) {
+        
+        
 
         // Increase ball size
         metalBall.scale.multiplyScalar(1.06);
@@ -239,7 +236,7 @@ const moveBall = (direction) => {
   // Check for collisions with chairs
   if (!collisionDetected && penStands.length === 0 && lamps.length === 0) {
     chairs.forEach((chair, index) => {
-      if (metalBall.position.distanceTo(chair.position) < 10) {
+      if (metalBall.position.distanceTo(chair.position) < 5) {
         // Increase ball size
         metalBall.scale.multiplyScalar(1.09);
         // Remove chair from scene
