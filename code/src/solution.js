@@ -28,27 +28,33 @@ const checkGameOver = () => {
 let penStandScoreElement, lampScoreElement, chairScoreElement;
 
 const initScoreElements = () => {
-  penStandScoreElement = document.createElement("div");
-  lampScoreElement = document.createElement("div");
-  chairScoreElement = document.createElement("div");
+  // Create score elements
+  penStandScoreElement = createScoreElement("Pen Stands: 0/5");
+  lampScoreElement = createScoreElement("Lamps: 0/5");
+  chairScoreElement = createScoreElement("Chairs: 0/5");
 
   // Position score elements in the top right corner
-  penStandScoreElement.style.position = lampScoreElement.style.position = chairScoreElement.style.position = "absolute";
   penStandScoreElement.style.top = "50px";
-  lampScoreElement.style.top = "70px";
-  chairScoreElement.style.top = "90px";
+  lampScoreElement.style.top = "80px";
+  chairScoreElement.style.top = "110px";
   penStandScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = "20px";
-
-  // Initial scores are 0 for all elements
-  penStandScoreElement.innerText = "Pen Stands: 0/5";
-  lampScoreElement.innerText = "Lamps: 0/5";
-  chairScoreElement.innerText = "Chairs: 0/5";
 
   // Append score elements to the body
   document.body.appendChild(penStandScoreElement);
   document.body.appendChild(lampScoreElement);
   document.body.appendChild(chairScoreElement);
 };
+
+const createScoreElement = (text) => {
+  const scoreElement = document.createElement("div");
+  scoreElement.innerText = text;
+  scoreElement.style.position = "absolute";
+  scoreElement.style.color = "white";
+  scoreElement.style.fontSize = "20px"; // Adjust font size as needed
+  scoreElement.style.fontFamily = "Arial, sans-serif"; // Adjust font family as needed
+  return scoreElement;
+};
+
 
 const updateScores = () => {
   const updateScoreElement = (element, value) => {
