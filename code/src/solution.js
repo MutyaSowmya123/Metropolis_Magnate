@@ -6,24 +6,57 @@ let renderer, scene, camera, metalBall;
 let penStands = [];
 let lamps = [];
 let chairs = [];
-
-// Define a variable to track if the game is over
 let gameOver = false;
+let timerElement, timeLeft = 50; // Set initial time to 45 seconds
 
 const checkGameOver = () => {
-  if (chairs.length === 0 && !gameOver) {
+  if ((chairs.length === 0 || timeLeft === 0) && !gameOver) {
     const gameOverElement = document.createElement("div");
-    gameOverElement.innerText = "Game Over !!";
+   // gameOverElement.innerText = timeLeft === 0 ? "Game Over!! <br> YOU LOSE :(" : "Game Over !!";
     gameOverElement.style.position = "absolute";
     gameOverElement.style.top = "50%";
     gameOverElement.style.left = "50%";
     gameOverElement.style.transform = "translate(-50%, -50%)";
-    gameOverElement.style.fontSize = "48px";
-    gameOverElement.style.color = "white";
+    gameOverElement.style.fontSize = "72px";
+    gameOverElement.style.color = "black";
+    if (timeLeft === 0) {
+      gameOverElement.innerHTML = " GAME OVER!! <br>  YOU LOSE:(";
+    } else if (timeLeft<=0 && chairs.length===0){
+      gameOverElement.innerText = "Game Over !! <br> YOU WIN:)";
+    }
     document.body.appendChild(gameOverElement);
     gameOver = true;
   }
 };
+
+const updateTimer = () => {
+  timerElement.innerText = "Timer: " + timeLeft + "s";
+};
+
+const initTimerElement = () => {
+  timerElement = document.createElement("div");
+  timerElement.innerText = "Timer: " + timeLeft + "s";
+  timerElement.style.position = "absolute";
+  timerElement.style.top = "50px";
+  timerElement.style.left = "20px"; // Position on the left
+  timerElement.style.color = "white";
+  timerElement.style.fontSize = "20px"; // Adjust font size as needed
+  timerElement.style.fontFamily = "Arial, sans-serif"; // Adjust font family as needed
+  document.body.appendChild(timerElement);
+};
+
+const startTimer = () => {
+  const timerInterval = setInterval(() => {
+    timeLeft--; // Decrement time left
+    updateTimer();
+
+    if (timeLeft === 0) {
+      clearInterval(timerInterval); // Stop the timer when it reaches zero
+      checkGameOver();
+    }
+  }, 1000); // Update timer every second
+};
+
 // Add score elements to display the count of collected elements
 let penStandScoreElement, lampScoreElement, chairScoreElement;
 
@@ -197,6 +230,8 @@ const init = async () => {
   animate();
 
   initScoreElements();
+  initTimerElement();
+  startTimer();
 };
 
 const onKeyDown = (event) => {
