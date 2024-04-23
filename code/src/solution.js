@@ -35,15 +35,15 @@ const initScoreElements = () => {
 
   // Position score elements in the top right corner
   penStandScoreElement.style.position = lampScoreElement.style.position = chairScoreElement.style.position = "absolute";
-  penStandScoreElement.style.top = "30px";
-  lampScoreElement.style.top = "50px";
-  chairScoreElement.style.top = "70px";
+  penStandScoreElement.style.top = "50px";
+  lampScoreElement.style.top = "70px";
+  chairScoreElement.style.top = "90px";
   penStandScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = "20px";
 
   // Initial scores are 0 for all elements
-  penStandScoreElement.innerText = "Pen Stands: 0";
-  lampScoreElement.innerText = "Lamps: 0";
-  chairScoreElement.innerText = "Chairs: 0";
+  penStandScoreElement.innerText = "Pen Stands: 0/5";
+  lampScoreElement.innerText = "Lamps: 0/5";
+  chairScoreElement.innerText = "Chairs: 0/5";
 
   // Append score elements to the body
   document.body.appendChild(penStandScoreElement);
@@ -54,31 +54,31 @@ const initScoreElements = () => {
 const updateScores = () => {
   const updateScoreElement = (element, value) => {
     element.style.opacity = "0"; // Set opacity to 0 to initiate transition
-    setTimeout(() => {
+    //setTimeout(() => {
       element.innerText = value;
       element.style.opacity = "1"; // Set opacity back to 1 after changing the value
-    }, 300); // Transition duration in milliseconds
+    //}, 300); // Transition duration in milliseconds
   };
 
   // Update pen stands score
   if (penStands.length === 0) {
     updateScoreElement(penStandScoreElement, "Pen Stands: Completed");
   } else {
-    updateScoreElement(penStandScoreElement, "Pen Stands: " + (5 - penStands.length));
+    updateScoreElement(penStandScoreElement, "Pen Stands: " + (5 - penStands.length) + "/5");
   }
 
   // Update lamps score
   if (lamps.length === 0) {
     updateScoreElement(lampScoreElement, "Lamps: Completed");
   } else {
-    updateScoreElement(lampScoreElement, "Lamps: " + (5 - lamps.length));
+    updateScoreElement(lampScoreElement, "Lamps: " + (5 - lamps.length) + "/5");
   }
 
   // Update chairs score
   if (chairs.length === 0) {
     updateScoreElement(chairScoreElement, "Chairs: Completed");
   } else {
-    updateScoreElement(chairScoreElement, "Chairs: " + (5 - chairs.length));
+    updateScoreElement(chairScoreElement, "Chairs: " + (5 - chairs.length) + "/5");
   }
 };
 
