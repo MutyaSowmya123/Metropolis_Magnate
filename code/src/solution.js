@@ -25,6 +25,63 @@ const checkGameOver = () => {
     gameOver = true;
   }
 };
+// Add score elements to display the count of collected elements
+let penStandScoreElement, lampScoreElement, chairScoreElement;
+
+const initScoreElements = () => {
+  penStandScoreElement = document.createElement("div");
+  lampScoreElement = document.createElement("div");
+  chairScoreElement = document.createElement("div");
+
+  // Position score elements in the top right corner
+  penStandScoreElement.style.position = lampScoreElement.style.position = chairScoreElement.style.position = "absolute";
+  penStandScoreElement.style.top = "30px";
+  lampScoreElement.style.top = "50px";
+  chairScoreElement.style.top = "70px";
+  penStandScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = "20px";
+
+  // Initial scores are 0 for all elements
+  penStandScoreElement.innerText = "Pen Stands: 0";
+  lampScoreElement.innerText = "Lamps: 0";
+  chairScoreElement.innerText = "Chairs: 0";
+
+  // Append score elements to the body
+  document.body.appendChild(penStandScoreElement);
+  document.body.appendChild(lampScoreElement);
+  document.body.appendChild(chairScoreElement);
+};
+
+const updateScores = () => {
+  const updateScoreElement = (element, value) => {
+    element.style.opacity = "0"; // Set opacity to 0 to initiate transition
+    setTimeout(() => {
+      element.innerText = value;
+      element.style.opacity = "1"; // Set opacity back to 1 after changing the value
+    }, 300); // Transition duration in milliseconds
+  };
+
+  // Update pen stands score
+  if (penStands.length === 0) {
+    updateScoreElement(penStandScoreElement, "Pen Stands: Completed");
+  } else {
+    updateScoreElement(penStandScoreElement, "Pen Stands: " + (5 - penStands.length));
+  }
+
+  // Update lamps score
+  if (lamps.length === 0) {
+    updateScoreElement(lampScoreElement, "Lamps: Completed");
+  } else {
+    updateScoreElement(lampScoreElement, "Lamps: " + (5 - lamps.length));
+  }
+
+  // Update chairs score
+  if (chairs.length === 0) {
+    updateScoreElement(chairScoreElement, "Chairs: Completed");
+  } else {
+    updateScoreElement(chairScoreElement, "Chairs: " + (5 - chairs.length));
+  }
+};
+
 
 const load = (url) =>
   new Promise((resolve, reject) => {
@@ -134,6 +191,8 @@ const init = async () => {
 
   document.addEventListener("keydown", onKeyDown);
   animate();
+
+  initScoreElements();
 };
 
 const onKeyDown = (event) => {
@@ -203,14 +262,13 @@ const moveBall = (direction) => {
     const distance = metalBall.position.distanceTo(penStandInstance.position);
     
     if (distance < 2) {
-      
-      // Check if all penstands are collected
       // Increase ball size
       metalBall.scale.multiplyScalar(1.06);
       // Remove pen stand from scene
       scene.remove(penStandInstance);
       penStands.splice(i, 1);
-      
+      // Update scores
+      updateScores();
       collisionDetected = true;
       break; // Exit loop after detecting collision with one penstand
     }
@@ -220,14 +278,13 @@ const moveBall = (direction) => {
   if (!collisionDetected && penStands.length === 0) {
     lamps.forEach((lamp, index) => {
       if (metalBall.position.distanceTo(lamp.position) < 2) {
-        
-        
-
         // Increase ball size
         metalBall.scale.multiplyScalar(1.06);
         // Remove lamp from scene
         scene.remove(lamp);
         lamps.splice(index, 1);
+        // Update scores
+        updateScores();
         collisionDetected = true;
       }
     });
@@ -242,6 +299,8 @@ const moveBall = (direction) => {
         // Remove chair from scene
         scene.remove(chair);
         chairs.splice(index, 1);
+        // Update scores
+        updateScores();
         collisionDetected = true;
       }
     });
@@ -259,6 +318,7 @@ const moveBall = (direction) => {
     checkGameOver();
   }
 };
+
 
 
 
