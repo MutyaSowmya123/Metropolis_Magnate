@@ -6,13 +6,13 @@ let renderer, scene, camera, metalBall;
 let penStands = [];
 let lamps = [];
 let chairs = [];
+let officePhones = [];
 let gameOver = false;
 let timerElement, timeLeft = 60; // Set initial time to 60 seconds
 
 const checkGameOver = () => {
   if ((chairs.length === 0 || timeLeft === 0) && !gameOver) {
     const gameOverElement = document.createElement("div");
-   // gameOverElement.innerText = timeLeft === 0 ? "Game Over!! <br> YOU LOSE :(" : "Game Over !!";
     gameOverElement.style.position = "absolute";
     gameOverElement.style.top = "50%";
     gameOverElement.style.left = "50%";
@@ -45,37 +45,42 @@ const initTimerElement = () => {
   document.body.appendChild(timerElement);
 };
 
-const startTimer = () => {
-  const timerInterval = setInterval(() => {
-    timeLeft--; // Decrement time left
-    updateTimer();
+let timerStarted = false; // Track if the timer has started
 
-    if (timeLeft === 0) {
-      clearInterval(timerInterval); // Stop the timer when it reaches zero
-      checkGameOver();
-    }else if(chairs.length===0 && timeLeft!=0){
-      clearInterval(timerInterval);// If all chairs are taken and there is still time left, stop the timer
+const startTimer = () => {
+    if (!timerStarted) {
+        timerStarted = true; // Set the timer started flag to true
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimer();
+            checkGameOver();
+            if (timeLeft <= 0 || chairs.length === 0) {
+                clearInterval(timerInterval); // Stop the timer if time runs out or all chairs are taken
+            }
+        }, 1000);
     }
-  }, 1000); // Update timer every second
 };
 
 // Add score elements to display the count of collected elements
-let penStandScoreElement, lampScoreElement, chairScoreElement;
+let penStandScoreElement, lampScoreElement, chairScoreElement, officePhoneScoreElement;
 
 const initScoreElements = () => {
   // Create score elements
   penStandScoreElement = createScoreElement("Pen Stands: 0/5");
   lampScoreElement = createScoreElement("Lamps: 0/5");
   chairScoreElement = createScoreElement("Chairs: 0/5");
+  officePhoneScoreElement = createScoreElement("Office Phones: 0/5");
 
   // Position score elements in the top right corner
   penStandScoreElement.style.top = "50px";
   lampScoreElement.style.top = "80px";
   chairScoreElement.style.top = "110px";
-  penStandScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = "20px";
+  officePhoneScoreElement.style.top = "140px";
+  penStandScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = officePhoneScoreElement.style.right = "20px";
 
   // Append score elements to the body
   document.body.appendChild(penStandScoreElement);
+  document.body.appendChild(officePhoneScoreElement);
   document.body.appendChild(lampScoreElement);
   document.body.appendChild(chairScoreElement);
 };
@@ -90,14 +95,11 @@ const createScoreElement = (text) => {
   return scoreElement;
 };
 
-
 const updateScores = () => {
   const updateScoreElement = (element, value) => {
     element.style.opacity = "0"; // Set opacity to 0 to initiate transition
-    //setTimeout(() => {
-      element.innerText = value;
-      element.style.opacity = "1"; // Set opacity back to 1 after changing the value
-    //}, 300); // Transition duration in milliseconds
+    element.innerText = value;
+    element.style.opacity = "1"; // Set opacity back to 1 after changing the value
   };
 
   // Update pen stands score
@@ -119,6 +121,13 @@ const updateScores = () => {
     updateScoreElement(chairScoreElement, "Chairs: Completed");
   } else {
     updateScoreElement(chairScoreElement, "Chairs: " + (5 - chairs.length) + "/5");
+  }
+
+  // Update officePhones score
+  if (officePhones.length === 0) {
+    updateScoreElement(officePhoneScoreElement, "Office Phones: Completed");
+  } else {
+    updateScoreElement(officePhoneScoreElement, "Office Phones: " + (5 - officePhones.length) + "/5");
   }
 };
 
@@ -175,15 +184,17 @@ const init = async () => {
   metalBall.scale.set(0.007, 0.007, 0.007);
   scene.add(metalBall);
 
-  // Load chair, pen stand, and lamp
+  // Load chair, pen stand, lamp, and officePhones
   const chair = await load("./office_desk_chair/scene.gltf");
   const penStand = await load("./penStand/scene.gltf");
   const lamp = await load("./office_desk_lamp/scene.gltf");
+  const officePhone = await load("./office_phone/scene.gltf");
 
   // Scale factors for resizing
   const chairScale = 5;
   const penStandScale = 10;
-  const lampScale = 5;
+  const lampScale = 6;
+  const officePhoneScale = 0.15;
 
   const maxDistance = 60; // Maximum distance for random positioning
   const numInstances = 5; // Number of instances for each element
@@ -201,6 +212,11 @@ const init = async () => {
       Math.random() * maxDistance - maxDistance / 2
     );
     const lampPosition = new THREE.Vector3(
+      Math.random() * maxDistance - maxDistance / 2,
+      0,
+      Math.random() * maxDistance - maxDistance / 2
+    );
+    const officePhonePosition = new THREE.Vector3(
       Math.random() * maxDistance - maxDistance / 2,
       0,
       Math.random() * maxDistance - maxDistance / 2
@@ -226,6 +242,13 @@ const init = async () => {
     lampInstance.position.copy(lampPosition);
     scene.add(lampInstance);
     lamps.push(lampInstance);
+
+    // Clone and scale officePhone instance
+    const officePhoneInstance = officePhone.clone();
+    officePhoneInstance.scale.set(officePhoneScale, officePhoneScale, officePhoneScale);
+    officePhoneInstance.position.copy(officePhonePosition);
+    scene.add(officePhoneInstance);
+    officePhones.push(officePhoneInstance);
   }
 
   document.addEventListener("keydown", onKeyDown);
@@ -272,7 +295,7 @@ const onKeyDown = (event) => {
 };
 
 const moveBall = (direction) => {
-  const moveSpeed = 0.5;
+  const moveSpeed = 0.8;
   const horizontalDirection = new THREE.Vector3(
     direction.x,
     0,
@@ -298,6 +321,7 @@ const moveBall = (direction) => {
 
   let collisionDetected = false; // Track if any collision is detected
 
+  // Check for collisions with penStands
   for (let i = penStands.length - 1; i >= 0; i--) {
     const penStandInstance = penStands[i];
     const distance = metalBall.position.distanceTo(penStandInstance.position);
@@ -305,7 +329,7 @@ const moveBall = (direction) => {
     if (distance < 2) {
       // Increase ball size
       metalBall.scale.multiplyScalar(1.09);
-      // Remove pen stand from scene
+      // Remove penStand from scene
       scene.remove(penStandInstance);
       penStands.splice(i, 1);
       // Update scores
@@ -316,7 +340,7 @@ const moveBall = (direction) => {
   }
 
   // Check for collisions with lamps
-  if (!collisionDetected && penStands.length === 0) {
+  if (!collisionDetected && penStands.length === 0 && officePhones.length===0) {
     lamps.forEach((lamp, index) => {
       if (metalBall.position.distanceTo(lamp.position) < 2) {
         // Increase ball size
@@ -332,7 +356,7 @@ const moveBall = (direction) => {
   }
 
   // Check for collisions with chairs
-  if (!collisionDetected && penStands.length === 0 && lamps.length === 0) {
+  if (!collisionDetected && penStands.length === 0 && officePhones.length===0 && lamps.length === 0) {
     chairs.forEach((chair, index) => {
       if (metalBall.position.distanceTo(chair.position) < 5) {
         // Increase ball size
@@ -340,6 +364,22 @@ const moveBall = (direction) => {
         // Remove chair from scene
         scene.remove(chair);
         chairs.splice(index, 1);
+        // Update scores
+        updateScores();
+        collisionDetected = true;
+      }
+    });
+  }
+
+  // Check for collisions with officePhones
+  if (!collisionDetected && penStands.length === 0 ) {
+    officePhones.forEach((officePhone, index) => {
+      if (metalBall.position.distanceTo(officePhone.position) < 5) {
+        // Increase ball size
+        metalBall.scale.multiplyScalar(1.09);
+        // Remove officePhone from scene
+        scene.remove(officePhone);
+        officePhones.splice(index, 1);
         // Update scores
         updateScores();
         collisionDetected = true;
