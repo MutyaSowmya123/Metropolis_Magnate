@@ -7,7 +7,7 @@ let penStands = [];
 let lamps = [];
 let chairs = [];
 let gameOver = false;
-let timerElement, timeLeft = 50; // Set initial time to 45 seconds
+let timerElement, timeLeft = 60; // Set initial time to 60 seconds
 
 const checkGameOver = () => {
   if ((chairs.length === 0 || timeLeft === 0) && !gameOver) {
@@ -18,11 +18,11 @@ const checkGameOver = () => {
     gameOverElement.style.left = "50%";
     gameOverElement.style.transform = "translate(-50%, -50%)";
     gameOverElement.style.fontSize = "72px";
-    gameOverElement.style.color = "black";
+    gameOverElement.style.color = "white";
     if (timeLeft === 0) {
       gameOverElement.innerHTML = " GAME OVER!! <br>  YOU LOSE:(";
-    } else if (timeLeft<=0 && chairs.length===0){
-      gameOverElement.innerText = "Game Over !! <br> YOU WIN:)";
+    } else if (timeLeft>=0 && chairs.length===0){
+      gameOverElement.innerHTML = "Game Over !! <br> YOU WIN:)";
     }
     document.body.appendChild(gameOverElement);
     gameOver = true;
@@ -53,6 +53,8 @@ const startTimer = () => {
     if (timeLeft === 0) {
       clearInterval(timerInterval); // Stop the timer when it reaches zero
       checkGameOver();
+    }else if(chairs.length===0 && timeLeft!=0){
+      clearInterval(timerInterval);// If all chairs are taken and there is still time left, stop the timer
     }
   }, 1000); // Update timer every second
 };
