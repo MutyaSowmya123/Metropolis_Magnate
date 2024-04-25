@@ -305,8 +305,12 @@ const moveBall = (direction) => {
     .clone()
     .add(horizontalDirection.multiplyScalar(moveSpeed));
 
-  // Ensure the ball stays on the surface plane
-  newPosition.setY(1); // Adjust the Y coordinate as needed
+    const boundaryLimit = 500 - 5; // Subtract half of the floor's total width/height to account for the center offset and a small buffer
+
+    // Ensure the ball stays on the surface plane and within boundaries
+    newPosition.setY(1); // Adjust the Y coordinate as needed
+    newPosition.setX(Math.min(Math.max(newPosition.x, -boundaryLimit), boundaryLimit));
+    newPosition.setZ(Math.min(Math.max(newPosition.z, -boundaryLimit), boundaryLimit));
 
   const ballRadius = 0.5 * 0.01;
   const ballCircumference = 2 * Math.PI * ballRadius;
