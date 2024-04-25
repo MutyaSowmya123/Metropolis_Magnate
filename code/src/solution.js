@@ -10,6 +10,8 @@ let officePhones = [];
 let gameOver = false;
 let timerElement, timeLeft = 60; // Set initial time to 60 seconds
 
+const keysPressed = {};
+
 const checkGameOver = () => {
   if ((chairs.length === 0 || timeLeft === 0) && !gameOver) {
     const gameOverElement = document.createElement("div");
@@ -251,12 +253,54 @@ const init = async () => {
     officePhones.push(officePhoneInstance);
   }
 
-  document.addEventListener("keydown", onKeyDown);
+  //document.addEventListener("keydown", onKeyDown);
+  //document.addEventListener("keyup", onKeyUp);
   animate();
 
   initScoreElements();
   initTimerElement();
   startTimer();
+};
+document.addEventListener("keydown", (event) => {
+  keysPressed[event.key] = true;
+  moveBallInDirection();
+});
+
+document.addEventListener("keyup", (event) => {
+  keysPressed[event.key] = false;
+});
+
+const moveBallInDirection = () => {
+  let moveDirection = new THREE.Vector3();
+  const cameraDirection = camera.getWorldDirection(new THREE.Vector3());
+  const surfaceNormal = new THREE.Vector3(0, 1, 0); // Up vector
+
+  if (keysPressed['ArrowUp'] && keysPressed['ArrowRight']) {
+      moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+      moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
+  } else if (keysPressed['ArrowUp'] && keysPressed['ArrowLeft']) {
+      moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+      moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
+  } else if (keysPressed['ArrowDown'] && keysPressed['ArrowRight']) {
+      moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+      moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
+  } else if (keysPressed['ArrowDown'] && keysPressed['ArrowLeft']) {
+      moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+      moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
+  } else if (keysPressed['ArrowUp']) {
+      moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+  } else if (keysPressed['ArrowDown']) {
+      moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+  } else if (keysPressed['ArrowRight']) {
+      moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
+  } else if (keysPressed['ArrowLeft']) {
+      moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
+  }
+
+  if (moveDirection.length() > 0) {
+      moveDirection.normalize();
+      moveBall(moveDirection);
+  }
 };
 
 const onKeyDown = (event) => {
