@@ -71,21 +71,22 @@ const initScoreElements = () => {
   penStandScoreElement = createScoreElement("Pen Stands: 0/5");
   lampScoreElement = createScoreElement("Lamps: 0/5");
   chairScoreElement = createScoreElement("Chairs: 0/5");
-  officePhoneScoreElement = createScoreElement("Office Phones: 0/5");
+  officePhoneScoreElement = createScoreElement("Office Phones: 0/5"); // Move this line here
 
   // Position score elements in the top right corner
   penStandScoreElement.style.top = "50px";
-  lampScoreElement.style.top = "80px";
-  chairScoreElement.style.top = "110px";
-  officePhoneScoreElement.style.top = "140px";
-  penStandScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = officePhoneScoreElement.style.right = "20px";
+  officePhoneScoreElement.style.top = "80px"; // Adjusted position for office phones
+  lampScoreElement.style.top = "110px";
+  chairScoreElement.style.top = "140px";
+  penStandScoreElement.style.right = officePhoneScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = "20px";
 
   // Append score elements to the body
   document.body.appendChild(penStandScoreElement);
-  document.body.appendChild(officePhoneScoreElement);
+  document.body.appendChild(officePhoneScoreElement); // Move this line here
   document.body.appendChild(lampScoreElement);
   document.body.appendChild(chairScoreElement);
 };
+
 
 const createScoreElement = (text) => {
   const scoreElement = document.createElement("div");
@@ -111,6 +112,13 @@ const updateScores = () => {
     updateScoreElement(penStandScoreElement, "Pen Stands: " + (5 - penStands.length) + "/5");
   }
 
+  // Update officePhones score
+  if (officePhones.length === 0) {
+    updateScoreElement(officePhoneScoreElement, "Office Phones: Completed");
+  } else {
+    updateScoreElement(officePhoneScoreElement, "Office Phones: " + (5 - officePhones.length) + "/5");
+  }
+
   // Update lamps score
   if (lamps.length === 0) {
     updateScoreElement(lampScoreElement, "Lamps: Completed");
@@ -125,12 +133,7 @@ const updateScores = () => {
     updateScoreElement(chairScoreElement, "Chairs: " + (5 - chairs.length) + "/5");
   }
 
-  // Update officePhones score
-  if (officePhones.length === 0) {
-    updateScoreElement(officePhoneScoreElement, "Office Phones: Completed");
-  } else {
-    updateScoreElement(officePhoneScoreElement, "Office Phones: " + (5 - officePhones.length) + "/5");
-  }
+  
 };
 
 const load = (url) =>
@@ -168,7 +171,7 @@ const init = async () => {
   scene.add(helper);
 
   const geometry = new THREE.PlaneGeometry(1, 1);
-  const texture = new THREE.TextureLoader().load("./assets/wood.jpeg");
+  const texture = new THREE.TextureLoader().load("./assets/carpet.jpg");
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(20, 20);
@@ -193,7 +196,7 @@ const init = async () => {
   const officePhone = await load("./office_phone/scene.gltf");
 
   // Scale factors for resizing
-  const chairScale = 5;
+  const chairScale = 3;
   const penStandScale = 10;
   const lampScale = 6;
   const officePhoneScale = 0.15;
@@ -270,36 +273,48 @@ document.addEventListener("keyup", (event) => {
   keysPressed[event.key] = false;
 });
 
+// Define variables for acceleration, deceleration, and maximum speed
+let acceleration = 0.1; // Adjust acceleration rate as needed
+let deceleration = 0.05; // Adjust deceleration rate as needed
+let currentSpeed = 0; // Current speed of the ball
+let maxSpeed = 0.5; // Adjust maximum speed as needed
+
+// Modify moveBallInDirection function to handle acceleration and deceleration
 const moveBallInDirection = () => {
   let moveDirection = new THREE.Vector3();
   const cameraDirection = camera.getWorldDirection(new THREE.Vector3());
   const surfaceNormal = new THREE.Vector3(0, 1, 0); // Up vector
 
-  if (keysPressed['ArrowUp'] && keysPressed['ArrowRight']) {
-      moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
-      moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
-  } else if (keysPressed['ArrowUp'] && keysPressed['ArrowLeft']) {
-      moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
-      moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
-  } else if (keysPressed['ArrowDown'] && keysPressed['ArrowRight']) {
-      moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
-      moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
-  } else if (keysPressed['ArrowDown'] && keysPressed['ArrowLeft']) {
-      moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
-      moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
-  } else if (keysPressed['ArrowUp']) {
-      moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
-  } else if (keysPressed['ArrowDown']) {
-      moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
-  } else if (keysPressed['ArrowRight']) {
-      moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
-  } else if (keysPressed['ArrowLeft']) {
-      moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
+  // Check which keys are pressed and update movement direction accordingly
+  if (keysPressed['ArrowUp']) {
+    moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+  }
+  if (keysPressed['ArrowDown']) {
+    moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+  }
+  if (keysPressed['ArrowRight']) {
+    moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
+  }
+  if (keysPressed['ArrowLeft']) {
+    moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
   }
 
+  // Accelerate or decelerate based on key press state
   if (moveDirection.length() > 0) {
-      moveDirection.normalize();
-      moveBall(moveDirection);
+    // Accelerate
+    currentSpeed += acceleration;
+    currentSpeed = Math.min(currentSpeed, maxSpeed); // Limit speed to a maximum value if needed
+  } else {
+    // Decelerate
+    currentSpeed -= deceleration;
+    currentSpeed = Math.max(currentSpeed, 0); // Ensure speed doesn't go negative
+  }
+
+  if (currentSpeed > 0) {
+    // Move the ball based on current speed and direction
+    moveDirection.normalize();
+    moveDirection.multiplyScalar(currentSpeed);
+    moveBall(moveDirection);
   }
 };
 
