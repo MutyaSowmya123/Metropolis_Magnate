@@ -196,7 +196,7 @@ const init = async () => {
   const officePhone = await load("./office_phone/scene.gltf");
 
   // Scale factors for resizing
-  const chairScale = 3;
+  const chairScale = 5;
   const penStandScale = 10;
   const lampScale = 6;
   const officePhoneScale = 0.15;
