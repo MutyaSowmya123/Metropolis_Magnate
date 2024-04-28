@@ -20,7 +20,7 @@ const checkGameOver = () => {
     gameOverElement.style.left = "50%";
     gameOverElement.style.transform = "translate(-50%, -50%)";
     gameOverElement.style.fontSize = "72px";
-    gameOverElement.style.color = "white";
+    gameOverElement.style.color = "red";
     if (timeLeft === 0) {
       gameOverElement.innerHTML = " GAME OVER!! <br>  YOU LOSE:(";
     } else if (timeLeft>=0 && chairs.length===0){
@@ -41,7 +41,7 @@ const initTimerElement = () => {
   timerElement.style.position = "absolute";
   timerElement.style.top = "50px";
   timerElement.style.left = "20px"; // Position on the left
-  timerElement.style.color = "white";
+  timerElement.style.color = "black";
   timerElement.style.fontSize = "20px"; // Adjust font size as needed
   timerElement.style.fontFamily = "Arial, sans-serif"; // Adjust font family as needed
   document.body.appendChild(timerElement);
@@ -50,17 +50,17 @@ const initTimerElement = () => {
 let timerStarted = false; // Track if the timer has started
 
 const startTimer = () => {
-    if (!timerStarted) {
-        timerStarted = true; // Set the timer started flag to true
-        const timerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimer();
-            checkGameOver();
-            if (timeLeft <= 0 || chairs.length === 0) {
-                clearInterval(timerInterval); // Stop the timer if time runs out or all chairs are taken
-            }
-        }, 1000);
-    }
+  if (!timerStarted) {
+      timerStarted = true; // Set the timer started flag to true
+      const timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTimer();
+          checkGameOver();
+          if (timeLeft <= 0 || chairs.length === 0) {
+              clearInterval(timerInterval); // Stop the timer if time runs out or all chairs are taken
+          }
+      }, 1000);
+  }
 };
 
 // Add score elements to display the count of collected elements
@@ -92,7 +92,7 @@ const createScoreElement = (text) => {
   const scoreElement = document.createElement("div");
   scoreElement.innerText = text;
   scoreElement.style.position = "absolute";
-  scoreElement.style.color = "white";
+  scoreElement.style.color = "black";
   scoreElement.style.fontSize = "20px"; // Adjust font size as needed
   scoreElement.style.fontFamily = "Arial, sans-serif"; // Adjust font family as needed
   return scoreElement;
@@ -262,7 +262,7 @@ const init = async () => {
 
   initScoreElements();
   initTimerElement();
-  startTimer();
+  //startTimer();
 };
 document.addEventListener("keydown", (event) => {
   keysPressed[event.key] = true;
@@ -274,10 +274,12 @@ document.addEventListener("keyup", (event) => {
 });
 
 // Define variables for acceleration, deceleration, and maximum speed
-let acceleration = 0.1; // Adjust acceleration rate as needed
-let deceleration = 0.05; // Adjust deceleration rate as needed
+let acceleration = 0.05; // Reduce acceleration rate
+let deceleration = 1; // Increase deceleration rate
+let maxSpeed = 0.02; // Reduce maximum speed
+
 let currentSpeed = 0; // Current speed of the ball
-let maxSpeed = 0.5; // Adjust maximum speed as needed
+
 
 // Modify moveBallInDirection function to handle acceleration and deceleration
 const moveBallInDirection = () => {
@@ -354,7 +356,7 @@ const onKeyDown = (event) => {
 };
 
 const moveBall = (direction) => {
-  const moveSpeed = 0.8;
+  const moveSpeed = 0.3;
   const horizontalDirection = new THREE.Vector3(
     direction.x,
     0,
@@ -377,7 +379,7 @@ const moveBall = (direction) => {
   const axisOfRotation = new THREE.Vector3()
     .crossVectors(new THREE.Vector3(0, 1, 0), horizontalDirection)
     .normalize();
-  const distanceMoved = horizontalDirection.length() * moveSpeed;
+  const distanceMoved = horizontalDirection.length() * moveSpeed+100;
   const rotationAngle = (distanceMoved / ballCircumference) * (2 * Math.PI);
 
   metalBall.rotateOnWorldAxis(axisOfRotation, -rotationAngle);
@@ -469,7 +471,39 @@ const animate = () => {
 
   // Only render the scene if the game is not over
   if (!gameOver) {
+    moveBallInDirection();
     renderer.render(scene, camera);
   }
 };
 init();
+
+// Function to hide the start button and show the restart button
+const showRestartButton = () => {
+  document.getElementById("startButtonContainer").style.display = "none";
+  document.getElementById("restartButtonContainer").style.display = "block";
+};
+
+// Function to start the game
+const startGame = () => {
+  startTimer();
+  document.getElementById("startButtonContainer").remove();
+};
+
+// Event listener for start button click
+document.getElementById("startButton").addEventListener("click", startGame);
+
+// Event listener for restart button click
+document.getElementById("restartButton").addEventListener("click", () => {
+  // Reset the game state
+  gameOver = false;
+  timeLeft = 60;
+  penStands = [];
+  lamps = [];
+  chairs = [];
+  officePhones = [];
+  timerStarted = false;
+  currentSpeed = 0;
+  metalBall.scale.set(0.007, 0.007, 0.007);
+  init();
+  document.getElementById("restartButtonContainer").style.display = "none";
+});

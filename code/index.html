@@ -1,24 +1,35 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>My Awesome Game</title>
+<head>
+    <title>My Awesome Game</title>
+    <link href="./src/style.css" rel="stylesheet">
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+          }
+        }
+    </script>
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div id="startButtonContainer">
+        <button id="startButton">Start</button>
+    </div>
+    <div id="restartButtonContainer" style="display: none;">
+        <button id="restartButton">Restart</button>
+    </div>
+    <script type="module" src="./src/app.js"></script>
+    <script>
+        const startGame = () => {
+            startTimer();
+            document.getElementById("startButtonContainer").style.display = "none";
+        };
 
-        <link href="./src/style.css" rel="stylesheet">
-
-        <script type="importmap">
-            {
-              "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
-              }
-            }
-          </script>
-
-        <!-- The app. -->
-        <script type="module" src="./src/app.js"></script>
-    </head>
-    <body>
-        <div id="container">
-            <canvas id="canvas"></canvas>
-        </div>
-    </body>
+        document.getElementById("startButton").addEventListener("click", startGame);
+    </script>
+</body>
 </html>
