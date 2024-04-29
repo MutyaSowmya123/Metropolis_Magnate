@@ -1,5 +1,7 @@
 Group members: Sowmya Mutya, Vamshi Nandala 
 
 ## Project Overview: Metropolis Magnate 
-Metropolis Magnate is an engaging and innovative game where players start as a tiny paperclip or coin and embark on an urban adventure of growth and discovery. The core gameplay mechanic revolves around collecting increasingly larger urban objects to progress through levels and unlock new areas within a vibrant, ever-expanding cityscape.
+Metropolis Magnate is an engaging and innovative game where players start as balls and embark on an urban adventure of growth and discovery. The core gameplay mechanic revolves around collecting increasingly larger urban objects to progress through levels. 
 
+First, collect pen stands to clear the way towards office phones and further collect lamps and finally the chairs.
+Collision with each element increases the size of the ball to a certain percentage.
