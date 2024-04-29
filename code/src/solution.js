@@ -283,6 +283,9 @@ let currentSpeed = 0; // Current speed of the ball
 
 // Modify moveBallInDirection function to handle acceleration and deceleration
 const moveBallInDirection = () => {
+  if (!timerStarted) {
+    return; // Don't move the ball if the game hasn't started
+  }
   let moveDirection = new THREE.Vector3();
   const cameraDirection = camera.getWorldDirection(new THREE.Vector3());
   const surfaceNormal = new THREE.Vector3(0, 1, 0); // Up vector
@@ -480,7 +483,7 @@ init();
 // Function to hide the start button and show the restart button
 const showRestartButton = () => {
   document.getElementById("startButtonContainer").style.display = "none";
-  document.getElementById("restartButtonContainer").style.display = "block";
+  
 };
 
 // Function to start the game
@@ -492,18 +495,3 @@ const startGame = () => {
 // Event listener for start button click
 document.getElementById("startButton").addEventListener("click", startGame);
 
-// Event listener for restart button click
-document.getElementById("restartButton").addEventListener("click", () => {
-  // Reset the game state
-  gameOver = false;
-  timeLeft = 60;
-  penStands = [];
-  lamps = [];
-  chairs = [];
-  officePhones = [];
-  timerStarted = false;
-  currentSpeed = 0;
-  metalBall.scale.set(0.007, 0.007, 0.007);
-  init();
-  document.getElementById("restartButtonContainer").style.display = "none";
-});
