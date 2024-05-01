@@ -271,11 +271,12 @@ document.addEventListener("keydown", (event) => {
 
 document.addEventListener("keyup", (event) => {
   keysPressed[event.key] = false;
+  moveBallInDirection();
 });
 
 // Define variables for acceleration, deceleration, and maximum speed
 let acceleration = 0.05; // Reduce acceleration rate
-let deceleration = 1; // Increase deceleration rate
+let deceleration = 0.7; // Increase deceleration rate
 let maxSpeed = 0.02; // Reduce maximum speed
 
 let currentSpeed = 0; // Current speed of the ball
@@ -287,6 +288,7 @@ const moveBallInDirection = () => {
     return; // Don't move the ball if the game hasn't started
   }
   let moveDirection = new THREE.Vector3();
+
   const cameraDirection = camera.getWorldDirection(new THREE.Vector3());
   const surfaceNormal = new THREE.Vector3(0, 1, 0); // Up vector
 
@@ -323,47 +325,12 @@ const moveBallInDirection = () => {
   }
 };
 
-const onKeyDown = (event) => {
-  const cameraDirection = camera.getWorldDirection(new THREE.Vector3());
-  const surfaceNormal = new THREE.Vector3(0, 1, 0); // Surface normal is always pointing up
-
-  let moveDirection;
-
-  switch (event.key) {
-    case "ArrowUp":
-      moveDirection = cameraDirection
-        .clone()
-        .projectOnPlane(surfaceNormal)
-        .normalize();
-      break;
-    case "ArrowDown":
-      moveDirection = cameraDirection
-        .clone()
-        .projectOnPlane(surfaceNormal)
-        .normalize()
-        .negate();
-      break;
-    case "ArrowLeft":
-      // Calculate right direction based on the cross product of surface normal and camera direction
-      moveDirection = surfaceNormal.clone().cross(cameraDirection).normalize();
-      break;
-    case "ArrowRight":
-      // Calculate left direction based on the cross product of camera direction and surface normal
-      moveDirection = cameraDirection.clone().cross(surfaceNormal).normalize();
-      break;
-    default:
-      return;
-  }
-
-  moveBall(moveDirection);
-};
-
-const moveBall = (direction) => {
+const moveBall = (moveDirection) => {
   const moveSpeed = 0.3;
   const horizontalDirection = new THREE.Vector3(
-    direction.x,
+    moveDirection.x,
     0,
-    direction.z
+    moveDirection.z
   ).normalize();
   const newPosition = metalBall.position
     .clone()
