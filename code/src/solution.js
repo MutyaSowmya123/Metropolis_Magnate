@@ -10,12 +10,42 @@ let gameOver = false;
 let timerElement, timeLeft = 60; // Set initial time to 60 seconds
 let keysPressed = {};
 
+let loseSound; // Declare this at the top of your script
+
+function setupLoseSound() {
+    loseSound = new Audio('./music/mixkit-horror-lose-2028 copy.mp3');
+    loseSound.volume = 0.7; // Adjust volume as needed
+}
+
+// Call this function in your game's initialization process
+setupLoseSound();
+
+let winSound; // Declare this at the top of your script
+
+function setupWinSound() {
+    winSound = new Audio('./music/SCNB3LA-winning copy.mp3');
+    winSound.volume = 0.7; // Adjust volume as needed
+}
+
+// Call this function in your game's initialization process
+setupWinSound();
+
+let collisionSound; // Declare this at the top of your script
+
+function setupCollisionSound() {
+    collisionSound = new Audio('./music/common1 copy.mp3');
+    collisionSound.volume = 1; // Adjust volume as needed
+}
+
+// Call this function in your game's initialization process
+setupCollisionSound();
+
 let backgroundMusic; // Declare this at the top of your script
 
 function setupBackgroundMusic() {
     backgroundMusic = new Audio('../music/04 - Akitaka Tohyama & Kenji Ninuma - The Moon and The Prince copy.mp3');
     backgroundMusic.loop = true; // Make the music loop indefinitely
-    backgroundMusic.volume = 0.5; // Set the volume at a comfortable level (adjust as needed)
+    backgroundMusic.volume = 0.4; // Set the volume at a comfortable level (adjust as needed)
 }
 
 // Call this function in your game's initialization process
@@ -31,9 +61,14 @@ const checkGameOver = () => {
     gameOverElement.style.fontSize = "72px";
     gameOverElement.style.color = "red";
     if (timeLeft === 0) {
+      loseSound.play();
       gameOverElement.innerHTML = " GAME OVER!! <br>  YOU LOSE:(";
+      backgroundMusic.pause();
+      
     } else if (timeLeft>=0 && chairs.length===0){
       gameOverElement.innerHTML = "Game Over !! <br> YOU WIN:)";
+      backgroundMusic.pause();
+      winSound.paly();
     }
     document.body.appendChild(gameOverElement);
     gameOver = true;
@@ -375,6 +410,9 @@ const moveBall = (moveDirection) => {
     const distance = metalBall.position.distanceTo(penStandInstance.position);
 
     if (distance < 2) {
+      // Play collision sound effect
+      collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
+
       // Increase ball size
       metalBall.scale.multiplyScalar(1.09);
       // Remove penStand from scene
@@ -391,6 +429,9 @@ const moveBall = (moveDirection) => {
   if (!collisionDetected && penStands.length === 0 && officePhones.length===0) {
     lamps.forEach((lamp, index) => {
       if (metalBall.position.distanceTo(lamp.position) < 2) {
+        // Play collision sound effect
+        collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
+
         // Increase ball size
         metalBall.scale.multiplyScalar(1.06);
         // Remove lamp from scene
@@ -407,6 +448,9 @@ const moveBall = (moveDirection) => {
   if (!collisionDetected && penStands.length === 0 && officePhones.length===0 && lamps.length === 0) {
     chairs.forEach((chair, index) => {
       if (metalBall.position.distanceTo(chair.position) < 5) {
+        // Play collision sound effect
+        collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
+
         // Increase ball size
         metalBall.scale.multiplyScalar(1.09);
         // Remove chair from scene
@@ -423,6 +467,9 @@ const moveBall = (moveDirection) => {
   if (!collisionDetected && penStands.length === 0 ) {
     officePhones.forEach((officePhone, index) => {
       if (metalBall.position.distanceTo(officePhone.position) < 5) {
+        // Play collision sound effect
+        collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
+
         // Increase ball size
         metalBall.scale.multiplyScalar(1.09);
         // Remove officePhone from scene
@@ -447,6 +494,8 @@ const moveBall = (moveDirection) => {
     checkGameOver();
   }
 };
+collisionSound.currentTime = 0; // Reset sound to start at the beginning
+//.catch(e => console.error("Failed to play collision sound:", e));
 
 // Modify the animate function to check for game over on each frame
 const animate = () => {
@@ -471,12 +520,12 @@ const startGame = () => {
   startTimer();
   document.getElementById("startButtonContainer").remove();
   backgroundMusic.play().catch(e => console.error("Error playing music:", e)); // Start the music and handle any errors
+  // Event listener for start button click
+  
+  backgroundMusic.play();//.catch(e => {
+    //console.error("Error playing music:", e);
+    // Handle the error (e.g., show a notification, attempt to reload the audio, etc.)
+//});
 };
 
-// Event listener for start button click
 document.getElementById("startButton").addEventListener("click", startGame);
-backgroundMusic.play().catch(e => {
-    console.error("Error playing music:", e);
-    // Handle the error (e.g., show a notification, attempt to reload the audio, etc.)
-});
-
