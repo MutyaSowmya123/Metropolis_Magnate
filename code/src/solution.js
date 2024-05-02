@@ -14,7 +14,7 @@ let loseSound; // Declare this at the top of your script
 
 function setupLoseSound() {
     loseSound = new Audio('./music/mixkit-horror-lose-2028 copy.mp3');
-    loseSound.volume = 0.7; // Adjust volume as needed
+    loseSound.volume = 1; // Adjust volume as needed
 }
 
 // Call this function in your game's initialization process
@@ -24,7 +24,7 @@ let winSound; // Declare this at the top of your script
 
 function setupWinSound() {
     winSound = new Audio('./music/SCNB3LA-winning copy.mp3');
-    winSound.volume = 0.7; // Adjust volume as needed
+    winSound.volume = 1; // Adjust volume as needed
 }
 
 // Call this function in your game's initialization process
@@ -66,9 +66,9 @@ const checkGameOver = () => {
       backgroundMusic.pause();
       
     } else if (timeLeft>=0 && chairs.length===0){
+      winSound.play();
       gameOverElement.innerHTML = "Game Over !! <br> YOU WIN:)";
       backgroundMusic.pause();
-      winSound.paly();
     }
     document.body.appendChild(gameOverElement);
     gameOver = true;
@@ -319,9 +319,9 @@ document.addEventListener("keyup", (event) => {
 });
 
 // Define variables for acceleration, deceleration, and maximum speed
-let acceleration = 0.004; // Reduce acceleration rate
-let deceleration = 0.004; // Increase deceleration rate
-let maxSpeed = 0.2; // Reduce maximum speed
+let acceleration = 0.005; // Reduce acceleration rate
+let deceleration = 0.005; // Increase deceleration rate
+let maxSpeed = 0.3; // Reduce maximum speed
 
 let currentSpeed = 0; // Current speed of the ball
 
