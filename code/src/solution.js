@@ -275,13 +275,13 @@ document.addEventListener("keyup", (event) => {
 });
 
 // Define variables for acceleration, deceleration, and maximum speed
-let acceleration = 0.05; // Reduce acceleration rate
-let deceleration = 0.7; // Increase deceleration rate
-let maxSpeed = 0.02; // Reduce maximum speed
+let acceleration = 0.004; // Reduce acceleration rate
+let deceleration = 0.004; // Increase deceleration rate
+let maxSpeed = 0.2; // Reduce maximum speed
 
 let currentSpeed = 0; // Current speed of the ball
 
-
+let lastNonZeroDirection = new THREE.Vector3();
 // Modify moveBallInDirection function to handle acceleration and deceleration
 const moveBallInDirection = () => {
   if (!timerStarted) {
@@ -309,14 +309,16 @@ const moveBallInDirection = () => {
   // Accelerate or decelerate based on key press state
   if (moveDirection.length() > 0) {
     // Accelerate
+    lastNonZeroDirection.copy(moveDirection.normalize());
     currentSpeed += acceleration;
     currentSpeed = Math.min(currentSpeed, maxSpeed); // Limit speed to a maximum value if needed
-  } else {
+  } else if(currentSpeed>0){
     // Decelerate
     currentSpeed -= deceleration;
     currentSpeed = Math.max(currentSpeed, 0); // Ensure speed doesn't go negative
+    moveDirection.copy(lastNonZeroDirection).multiplyScalar(currentSpeed / maxSpeed);
   }
-
+  console.log("Current Speed: ", currentSpeed);
   if (currentSpeed > 0) {
     // Move the ball based on current speed and direction
     moveDirection.normalize();
@@ -324,36 +326,38 @@ const moveBallInDirection = () => {
     moveBall(moveDirection);
   }
 };
+const rotateBall = (direction, speed) => {
+  const ballRadius = 0.03; // Set this to match the actual radius of your ball model in your scene
+  const distanceMoved = direction.length() * speed;
+  const rotationAngle = distanceMoved / (ballRadius * 2 * Math.PI);
+
+  const axisOfRotation = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), direction).normalize();
+  metalBall.rotateOnWorldAxis(axisOfRotation, rotationAngle);
+};
+
 
 const moveBall = (moveDirection) => {
-  const moveSpeed = 0.3;
+  console.log("movedirection:", moveDirection.length())
+  const moveSpeed = currentSpeed;
   const horizontalDirection = new THREE.Vector3(
     moveDirection.x,
     0,
     moveDirection.z
   ).normalize();
-  const newPosition = metalBall.position
-    .clone()
-    .add(horizontalDirection.multiplyScalar(moveSpeed));
+  
+  const newPosition = metalBall.position.clone().add(horizontalDirection.multiplyScalar(moveSpeed));
+  const boundaryLimit = 500 - 5; // Limit to keep the ball within boundaries
+  console.log("Horizontal Direction:", horizontalDirection.length())
+  // Ensure the ball stays within boundaries
+  newPosition.setY(1); // Keep the Y-coordinate consistent
+  newPosition.setX(Math.min(Math.max(newPosition.x, -boundaryLimit), boundaryLimit));
+  newPosition.setZ(Math.min(Math.max(newPosition.z, -boundaryLimit), boundaryLimit));
 
-    const boundaryLimit = 500 - 5; // Subtract half of the floor's total width/height to account for the center offset and a small buffer
+  metalBall.position.copy(newPosition);
 
-    // Ensure the ball stays on the surface plane and within boundaries
-    newPosition.setY(1); // Adjust the Y coordinate as needed
-    newPosition.setX(Math.min(Math.max(newPosition.x, -boundaryLimit), boundaryLimit));
-    newPosition.setZ(Math.min(Math.max(newPosition.z, -boundaryLimit), boundaryLimit));
-
-  const ballRadius = 0.5 * 0.01;
-  const ballCircumference = 2 * Math.PI * ballRadius;
-
-  const axisOfRotation = new THREE.Vector3()
-    .crossVectors(new THREE.Vector3(0, 1, 0), horizontalDirection)
-    .normalize();
-  const distanceMoved = horizontalDirection.length() * moveSpeed+100;
-  const rotationAngle = (distanceMoved / ballCircumference) * (2 * Math.PI);
-
-  metalBall.rotateOnWorldAxis(axisOfRotation, -rotationAngle);
-
+  // Continue to rotate the ball
+  rotateBall(horizontalDirection, moveSpeed);
+ // console.log("Rotation Axis: ", axisOfRotation, "Rotation Angle: ", rotationAngle);
   let collisionDetected = false; // Track if any collision is detected
 
   // Check for collisions with penStands
