@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "../node_modules/three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "../node_modules/three/examples/jsm/controls/OrbitControls.js";
-
 let renderer, scene, camera, metalBall;
 let penStands = [];
 let lamps = [];
@@ -9,8 +8,18 @@ let chairs = [];
 let officePhones = [];
 let gameOver = false;
 let timerElement, timeLeft = 60; // Set initial time to 60 seconds
+let keysPressed = {};
 
-const keysPressed = {};
+let backgroundMusic; // Declare this at the top of your script
+
+function setupBackgroundMusic() {
+    backgroundMusic = new Audio('../music/04 - Akitaka Tohyama & Kenji Ninuma - The Moon and The Prince copy.mp3');
+    backgroundMusic.loop = true; // Make the music loop indefinitely
+    backgroundMusic.volume = 0.5; // Set the volume at a comfortable level (adjust as needed)
+}
+
+// Call this function in your game's initialization process
+setupBackgroundMusic();
 
 const checkGameOver = () => {
   if ((chairs.length === 0 || timeLeft === 0) && !gameOver) {
@@ -318,7 +327,7 @@ const moveBallInDirection = () => {
     currentSpeed = Math.max(currentSpeed, 0); // Ensure speed doesn't go negative
     moveDirection.copy(lastNonZeroDirection).multiplyScalar(currentSpeed / maxSpeed);
   }
-  console.log("Current Speed: ", currentSpeed);
+  //console.log("Current Speed: ", currentSpeed);
   if (currentSpeed > 0) {
     // Move the ball based on current speed and direction
     moveDirection.normalize();
@@ -337,7 +346,7 @@ const rotateBall = (direction, speed) => {
 
 
 const moveBall = (moveDirection) => {
-  console.log("movedirection:", moveDirection.length())
+  //console.log("movedirection:", moveDirection.length())
   const moveSpeed = currentSpeed;
   const horizontalDirection = new THREE.Vector3(
     moveDirection.x,
@@ -347,7 +356,7 @@ const moveBall = (moveDirection) => {
   
   const newPosition = metalBall.position.clone().add(horizontalDirection.multiplyScalar(moveSpeed));
   const boundaryLimit = 500 - 5; // Limit to keep the ball within boundaries
-  console.log("Horizontal Direction:", horizontalDirection.length())
+  //console.log("Horizontal Direction:", horizontalDirection.length())
   // Ensure the ball stays within boundaries
   newPosition.setY(1); // Keep the Y-coordinate consistent
   newPosition.setX(Math.min(Math.max(newPosition.x, -boundaryLimit), boundaryLimit));
@@ -461,8 +470,13 @@ const showRestartButton = () => {
 const startGame = () => {
   startTimer();
   document.getElementById("startButtonContainer").remove();
+  backgroundMusic.play().catch(e => console.error("Error playing music:", e)); // Start the music and handle any errors
 };
 
 // Event listener for start button click
 document.getElementById("startButton").addEventListener("click", startGame);
+backgroundMusic.play().catch(e => {
+    console.error("Error playing music:", e);
+    // Handle the error (e.g., show a notification, attempt to reload the audio, etc.)
+});
 
