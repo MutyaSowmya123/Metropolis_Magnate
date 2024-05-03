@@ -44,9 +44,7 @@ setupCollisionSound();
 let backgroundMusic; // Declare this at the top of your script
 
 function setupBackgroundMusic() {
-  backgroundMusic = new Audio(
-    "../music/04 - Akitaka Tohyama & Kenji Ninuma - The Moon and The Prince copy.mp3"
-  );
+  backgroundMusic = new Audio("../music/8-bit-arcade-138828 copy.mp3");
   backgroundMusic.loop = true; // Make the music loop indefinitely
   backgroundMusic.volume = 0.4; // Set the volume at a comfortable level (adjust as needed)
 }
