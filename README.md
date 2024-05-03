@@ -10,3 +10,6 @@ Collision with each element increases the size of the ball to a certain percenta
 => Background audio will be played once the game starts.
 => Collision sound effects. 
 => Different audios for winning and losing.
+
+## Zooming Effect on Collision
+=> A slight zoomin and zoomout effect on collision of objects with the ball.
