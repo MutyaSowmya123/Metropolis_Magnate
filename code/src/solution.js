@@ -7,14 +7,15 @@ let lamps = [];
 let chairs = [];
 let officePhones = [];
 let gameOver = false;
-let timerElement, timeLeft = 60; // Set initial time to 60 seconds
+let timerElement,
+  timeLeft = 60; // Set initial time to 60 seconds
 let keysPressed = {};
 
 let loseSound; // Declare this at the top of your script
 
 function setupLoseSound() {
-    loseSound = new Audio('./music/mixkit-horror-lose-2028 copy.mp3');
-    loseSound.volume = 1; // Adjust volume as needed
+  loseSound = new Audio("./music/mixkit-horror-lose-2028 copy.mp3");
+  loseSound.volume = 1; // Adjust volume as needed
 }
 
 // Call this function in your game's initialization process
@@ -23,8 +24,8 @@ setupLoseSound();
 let winSound; // Declare this at the top of your script
 
 function setupWinSound() {
-    winSound = new Audio('./music/SCNB3LA-winning copy.mp3');
-    winSound.volume = 1; // Adjust volume as needed
+  winSound = new Audio("./music/SCNB3LA-winning copy.mp3");
+  winSound.volume = 1; // Adjust volume as needed
 }
 
 // Call this function in your game's initialization process
@@ -33,8 +34,8 @@ setupWinSound();
 let collisionSound; // Declare this at the top of your script
 
 function setupCollisionSound() {
-    collisionSound = new Audio('./music/common1 copy.mp3');
-    collisionSound.volume = 1; // Adjust volume as needed
+  collisionSound = new Audio("./music/common1 copy.mp3");
+  collisionSound.volume = 1; // Adjust volume as needed
 }
 
 // Call this function in your game's initialization process
@@ -43,9 +44,11 @@ setupCollisionSound();
 let backgroundMusic; // Declare this at the top of your script
 
 function setupBackgroundMusic() {
-    backgroundMusic = new Audio('../music/04 - Akitaka Tohyama & Kenji Ninuma - The Moon and The Prince copy.mp3');
-    backgroundMusic.loop = true; // Make the music loop indefinitely
-    backgroundMusic.volume = 0.4; // Set the volume at a comfortable level (adjust as needed)
+  backgroundMusic = new Audio(
+    "../music/04 - Akitaka Tohyama & Kenji Ninuma - The Moon and The Prince copy.mp3"
+  );
+  backgroundMusic.loop = true; // Make the music loop indefinitely
+  backgroundMusic.volume = 0.4; // Set the volume at a comfortable level (adjust as needed)
 }
 
 // Call this function in your game's initialization process
@@ -64,8 +67,7 @@ const checkGameOver = () => {
       loseSound.play();
       gameOverElement.innerHTML = " GAME OVER!! <br>  YOU LOSE:(";
       backgroundMusic.pause();
-      
-    } else if (timeLeft>=0 && chairs.length===0){
+    } else if (timeLeft >= 0 && chairs.length === 0) {
       winSound.play();
       gameOverElement.innerHTML = "Game Over !! <br> YOU WIN:)";
       backgroundMusic.pause();
@@ -95,20 +97,23 @@ let timerStarted = false; // Track if the timer has started
 
 const startTimer = () => {
   if (!timerStarted) {
-      timerStarted = true; // Set the timer started flag to true
-      const timerInterval = setInterval(() => {
-          timeLeft--;
-          updateTimer();
-          checkGameOver();
-          if (timeLeft <= 0 || chairs.length === 0) {
-              clearInterval(timerInterval); // Stop the timer if time runs out or all chairs are taken
-          }
-      }, 1000);
+    timerStarted = true; // Set the timer started flag to true
+    const timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimer();
+      checkGameOver();
+      if (timeLeft <= 0 || chairs.length === 0) {
+        clearInterval(timerInterval); // Stop the timer if time runs out or all chairs are taken
+      }
+    }, 1000);
   }
 };
 
 // Add score elements to display the count of collected elements
-let penStandScoreElement, lampScoreElement, chairScoreElement, officePhoneScoreElement;
+let penStandScoreElement,
+  lampScoreElement,
+  chairScoreElement,
+  officePhoneScoreElement;
 
 const initScoreElements = () => {
   // Create score elements
@@ -122,7 +127,11 @@ const initScoreElements = () => {
   officePhoneScoreElement.style.top = "80px"; // Adjusted position for office phones
   lampScoreElement.style.top = "110px";
   chairScoreElement.style.top = "140px";
-  penStandScoreElement.style.right = officePhoneScoreElement.style.right = lampScoreElement.style.right = chairScoreElement.style.right = "20px";
+  penStandScoreElement.style.right =
+    officePhoneScoreElement.style.right =
+    lampScoreElement.style.right =
+    chairScoreElement.style.right =
+      "20px";
 
   // Append score elements to the body
   document.body.appendChild(penStandScoreElement);
@@ -130,7 +139,6 @@ const initScoreElements = () => {
   document.body.appendChild(lampScoreElement);
   document.body.appendChild(chairScoreElement);
 };
-
 
 const createScoreElement = (text) => {
   const scoreElement = document.createElement("div");
@@ -153,14 +161,20 @@ const updateScores = () => {
   if (penStands.length === 0) {
     updateScoreElement(penStandScoreElement, "Pen Stands: Completed");
   } else {
-    updateScoreElement(penStandScoreElement, "Pen Stands: " + (5 - penStands.length) + "/5");
+    updateScoreElement(
+      penStandScoreElement,
+      "Pen Stands: " + (5 - penStands.length) + "/5"
+    );
   }
 
   // Update officePhones score
   if (officePhones.length === 0) {
     updateScoreElement(officePhoneScoreElement, "Office Phones: Completed");
   } else {
-    updateScoreElement(officePhoneScoreElement, "Office Phones: " + (5 - officePhones.length) + "/5");
+    updateScoreElement(
+      officePhoneScoreElement,
+      "Office Phones: " + (5 - officePhones.length) + "/5"
+    );
   }
 
   // Update lamps score
@@ -174,10 +188,11 @@ const updateScores = () => {
   if (chairs.length === 0) {
     updateScoreElement(chairScoreElement, "Chairs: Completed");
   } else {
-    updateScoreElement(chairScoreElement, "Chairs: " + (5 - chairs.length) + "/5");
+    updateScoreElement(
+      chairScoreElement,
+      "Chairs: " + (5 - chairs.length) + "/5"
+    );
   }
-
-  
 };
 
 const load = (url) =>
@@ -294,7 +309,11 @@ const init = async () => {
 
     // Clone and scale officePhone instance
     const officePhoneInstance = officePhone.clone();
-    officePhoneInstance.scale.set(officePhoneScale, officePhoneScale, officePhoneScale);
+    officePhoneInstance.scale.set(
+      officePhoneScale,
+      officePhoneScale,
+      officePhoneScale
+    );
     officePhoneInstance.position.copy(officePhonePosition);
     scene.add(officePhoneInstance);
     officePhones.push(officePhoneInstance);
@@ -321,7 +340,7 @@ document.addEventListener("keyup", (event) => {
 // Define variables for acceleration, deceleration, and maximum speed
 let acceleration = 0.005; // Reduce acceleration rate
 let deceleration = 0.005; // Increase deceleration rate
-let maxSpeed = 0.3; // Reduce maximum speed
+let maxSpeed = 0.27; // Reduce maximum speed
 
 let currentSpeed = 0; // Current speed of the ball
 
@@ -337,16 +356,20 @@ const moveBallInDirection = () => {
   const surfaceNormal = new THREE.Vector3(0, 1, 0); // Up vector
 
   // Check which keys are pressed and update movement direction accordingly
-  if (keysPressed['ArrowUp']) {
-    moveDirection.add(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+  if (keysPressed["ArrowUp"]) {
+    moveDirection.add(
+      cameraDirection.clone().projectOnPlane(surfaceNormal).normalize()
+    );
   }
-  if (keysPressed['ArrowDown']) {
-    moveDirection.sub(cameraDirection.clone().projectOnPlane(surfaceNormal).normalize());
+  if (keysPressed["ArrowDown"]) {
+    moveDirection.sub(
+      cameraDirection.clone().projectOnPlane(surfaceNormal).normalize()
+    );
   }
-  if (keysPressed['ArrowRight']) {
+  if (keysPressed["ArrowRight"]) {
     moveDirection.add(cameraDirection.clone().cross(surfaceNormal).normalize());
   }
-  if (keysPressed['ArrowLeft']) {
+  if (keysPressed["ArrowLeft"]) {
     moveDirection.sub(cameraDirection.clone().cross(surfaceNormal).normalize());
   }
 
@@ -356,11 +379,13 @@ const moveBallInDirection = () => {
     lastNonZeroDirection.copy(moveDirection.normalize());
     currentSpeed += acceleration;
     currentSpeed = Math.min(currentSpeed, maxSpeed); // Limit speed to a maximum value if needed
-  } else if(currentSpeed>0){
+  } else if (currentSpeed > 0) {
     // Decelerate
     currentSpeed -= deceleration;
     currentSpeed = Math.max(currentSpeed, 0); // Ensure speed doesn't go negative
-    moveDirection.copy(lastNonZeroDirection).multiplyScalar(currentSpeed / maxSpeed);
+    moveDirection
+      .copy(lastNonZeroDirection)
+      .multiplyScalar(currentSpeed / maxSpeed);
   }
   //console.log("Current Speed: ", currentSpeed);
   if (currentSpeed > 0) {
@@ -375,9 +400,72 @@ const rotateBall = (direction, speed) => {
   const distanceMoved = direction.length() * speed;
   const rotationAngle = distanceMoved / (ballRadius * 2 * Math.PI);
 
-  const axisOfRotation = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), direction).normalize();
+  const axisOfRotation = new THREE.Vector3()
+    .crossVectors(new THREE.Vector3(0, 1, 0), direction)
+    .normalize();
   metalBall.rotateOnWorldAxis(axisOfRotation, rotationAngle);
 };
+
+
+const zoomCamera = (zoomFactor) => {
+  const initialFOV = camera.fov;
+  const targetFOV = initialFOV * zoomFactor; // Adjust zoom factor as needed
+
+  const zoomDuration = 0.05; // Adjust the duration of the zoom (in seconds)
+  const zoomOutDelay = 100; // Delay before zooming out (in milliseconds)
+
+  // Function to handle zoom animation
+  const zoomAnimation = (timestamp) => {
+    const elapsedTime = (timestamp - startTime) / 1000; // Convert milliseconds to seconds
+
+    // Calculate progress based on elapsed time and duration
+    const progress = Math.min(elapsedTime / zoomDuration, 1);
+
+    // Interpolate FOV from initialFOV to targetFOV
+    const newFOV = THREE.MathUtils.lerp(initialFOV, targetFOV, progress);
+    camera.fov = newFOV;
+    camera.updateProjectionMatrix();
+
+    // Continue animation until progress reaches 1
+    if (progress < 1) {
+      requestAnimationFrame(zoomAnimation);
+    } else {
+      // After zooming in, wait for the specified delay and then zoom out
+      setTimeout(() => {
+        // Reset start time for the zoom out animation
+        startTime = timestamp;
+        // Reverse the zoom factor to zoom out
+        const zoomOutFactor = 1 / zoomFactor;
+        // Request animation frame for zoom out animation
+        requestAnimationFrame(zoomOutAnimation);
+      }, zoomOutDelay);
+    }
+  };
+
+  // Function to handle zoom out animation
+  const zoomOutAnimation = (timestamp) => {
+    const elapsedTime = (timestamp - startTime) / 1000; // Convert milliseconds to seconds
+
+    // Calculate progress based on elapsed time and duration
+    const progress = Math.min(elapsedTime / zoomDuration, 1);
+
+    // Interpolate FOV from targetFOV back to initialFOV
+    const newFOV = THREE.MathUtils.lerp(targetFOV, initialFOV, progress);
+    camera.fov = newFOV;
+    camera.updateProjectionMatrix();
+
+    // Continue animation until progress reaches 1
+    if (progress < 1) {
+      requestAnimationFrame(zoomOutAnimation);
+    }
+  };
+
+  // Start the zoom animation by capturing the start time
+  let startTime = performance.now();
+  requestAnimationFrame(zoomAnimation);
+};
+
+
 
 
 const moveBall = (moveDirection) => {
@@ -388,20 +476,26 @@ const moveBall = (moveDirection) => {
     0,
     moveDirection.z
   ).normalize();
-  
-  const newPosition = metalBall.position.clone().add(horizontalDirection.multiplyScalar(moveSpeed));
+
+  const newPosition = metalBall.position
+    .clone()
+    .add(horizontalDirection.multiplyScalar(moveSpeed));
   const boundaryLimit = 500 - 5; // Limit to keep the ball within boundaries
   //console.log("Horizontal Direction:", horizontalDirection.length())
   // Ensure the ball stays within boundaries
   newPosition.setY(1); // Keep the Y-coordinate consistent
-  newPosition.setX(Math.min(Math.max(newPosition.x, -boundaryLimit), boundaryLimit));
-  newPosition.setZ(Math.min(Math.max(newPosition.z, -boundaryLimit), boundaryLimit));
+  newPosition.setX(
+    Math.min(Math.max(newPosition.x, -boundaryLimit), boundaryLimit)
+  );
+  newPosition.setZ(
+    Math.min(Math.max(newPosition.z, -boundaryLimit), boundaryLimit)
+  );
 
   metalBall.position.copy(newPosition);
 
   // Continue to rotate the ball
   rotateBall(horizontalDirection, moveSpeed);
- // console.log("Rotation Axis: ", axisOfRotation, "Rotation Angle: ", rotationAngle);
+  // console.log("Rotation Axis: ", axisOfRotation, "Rotation Angle: ", rotationAngle);
   let collisionDetected = false; // Track if any collision is detected
 
   // Check for collisions with penStands
@@ -411,8 +505,10 @@ const moveBall = (moveDirection) => {
 
     if (distance < 2) {
       // Play collision sound effect
-      collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
-
+      collisionSound
+        .play()
+        .catch((e) => console.error("Failed to play collision sound:", e));
+      zoomCamera(0.9);
       // Increase ball size
       metalBall.scale.multiplyScalar(1.09);
       // Remove penStand from scene
@@ -426,12 +522,18 @@ const moveBall = (moveDirection) => {
   }
 
   // Check for collisions with lamps
-  if (!collisionDetected && penStands.length === 0 && officePhones.length===0) {
+  if (
+    !collisionDetected &&
+    penStands.length === 0 &&
+    officePhones.length === 0
+  ) {
     lamps.forEach((lamp, index) => {
-      if (metalBall.position.distanceTo(lamp.position) < 2) {
+      if (metalBall.position.distanceTo(lamp.position) < 3) {
         // Play collision sound effect
-        collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
-
+        collisionSound
+          .play()
+          .catch((e) => console.error("Failed to play collision sound:", e));
+        zoomCamera(0.9);
         // Increase ball size
         metalBall.scale.multiplyScalar(1.06);
         // Remove lamp from scene
@@ -445,12 +547,19 @@ const moveBall = (moveDirection) => {
   }
 
   // Check for collisions with chairs
-  if (!collisionDetected && penStands.length === 0 && officePhones.length===0 && lamps.length === 0) {
+  if (
+    !collisionDetected &&
+    penStands.length === 0 &&
+    officePhones.length === 0 &&
+    lamps.length === 0
+  ) {
     chairs.forEach((chair, index) => {
       if (metalBall.position.distanceTo(chair.position) < 5) {
         // Play collision sound effect
-        collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
-
+        collisionSound
+          .play()
+          .catch((e) => console.error("Failed to play collision sound:", e));
+        zoomCamera(0.9);
         // Increase ball size
         metalBall.scale.multiplyScalar(1.09);
         // Remove chair from scene
@@ -464,12 +573,14 @@ const moveBall = (moveDirection) => {
   }
 
   // Check for collisions with officePhones
-  if (!collisionDetected && penStands.length === 0 ) {
+  if (!collisionDetected && penStands.length === 0) {
     officePhones.forEach((officePhone, index) => {
       if (metalBall.position.distanceTo(officePhone.position) < 5) {
         // Play collision sound effect
-        collisionSound.play().catch(e => console.error("Failed to play collision sound:", e));
-
+        collisionSound
+          .play()
+          .catch((e) => console.error("Failed to play collision sound:", e));
+        zoomCamera(0.9);
         // Increase ball size
         metalBall.scale.multiplyScalar(1.09);
         // Remove officePhone from scene
@@ -512,20 +623,19 @@ init();
 // Function to hide the start button and show the restart button
 const showRestartButton = () => {
   document.getElementById("startButtonContainer").style.display = "none";
-  
 };
 
 // Function to start the game
 const startGame = () => {
   startTimer();
   document.getElementById("startButtonContainer").remove();
-  backgroundMusic.play().catch(e => console.error("Error playing music:", e)); // Start the music and handle any errors
+  backgroundMusic.play().catch((e) => console.error("Error playing music:", e)); // Start the music and handle any errors
   // Event listener for start button click
-  
-  backgroundMusic.play();//.catch(e => {
-    //console.error("Error playing music:", e);
-    // Handle the error (e.g., show a notification, attempt to reload the audio, etc.)
-//});
+
+  backgroundMusic.play(); //.catch(e => {
+  //console.error("Error playing music:", e);
+  // Handle the error (e.g., show a notification, attempt to reload the audio, etc.)
+  //});
 };
 
 document.getElementById("startButton").addEventListener("click", startGame);
